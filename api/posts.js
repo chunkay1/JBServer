@@ -9,10 +9,10 @@ postsRouter.use((req, res, next) => {
   next(); // THIS IS DIFFERENT
 });
 
-postsRouter.get('/posts', async (req, res) => {
-    const posts = await getAllPosts();
-    console.log(posts);
-    res.send({
+postsRouter.get('/', async (req, res) => {
+  const posts = await getAllPosts();
+  console.log(posts);
+  res.send({
     posts
   });
 });
