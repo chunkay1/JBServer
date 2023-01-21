@@ -5,17 +5,8 @@ const { requireUser } = require("./utils");
 
 const { createPost } = require("../db");
 
-// From users.js to assist w/ 
-// const jwt = require('jsonwebtoken');
-// const { JWT_SECRET } = process.env;
-
-// const { getUserByUsername } = require('../db');
-
 postsRouter.post("/", requireUser, async (req, res, next) => {
-  // Placeholder for testing functionality
-  // res.send({ message: 'under construction' });
 
-  //Part 3 updates
   const { title, content, tags = "" } = req.body;
 
   const tagArr = tags.trim().split(/\s+/);
@@ -27,31 +18,10 @@ postsRouter.post("/", requireUser, async (req, res, next) => {
   }
 
   try {
-    // ATTEMPT 1 ------------------------------------------------------>
-    // const { authtoken } = jwt.verify(token, process.env.JWT_SECRET);
-    // console.log(token);
+    postData.authorId = req.user.id;
+    postData.title = title;
+    postData.content = content;
 
-    // const username = authtoken.username
-    // console.log(username);
-
-    // const currentUser = await getUserByUsername(username);
-    // const id = currentUser.id
-
-    // console.log('currentUser.id =', id);
-    // // attempt to define user - from users.js
-
-    // postData = {
-    //   authorId: id,
-    //   title: title,
-    //   content: content
-    // }
-    // add authorId, title, content to postData object
-    // ATTEMPT 1 ------------------------------------------------------>
-    // ATTEMPT 2 ------------------------------------------------------>
-        postData.authorId = req.user.id;
-        postData.title = title;
-        postData.content = content;
-    // ATTEMPT 2 ------------------------------------------------------>
     const post = await createPost(postData);
     // this will create the post and the tags for us
 
