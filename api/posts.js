@@ -27,28 +27,40 @@ postsRouter.post("/", requireUser, async (req, res, next) => {
   }
 
   try {
-    const { token } = jwt.verify(data, JWT_SECRET);
-    const username = token.username
+    const { authtoken } = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(token);
+
+    const username = authtoken.username
+    console.log(username);
+
     const currentUser = await getUserByUsername(username);
     const id = currentUser.id
+
     console.log('currentUser.id =', id);
     // attempt to define user - from users.js
-    postData = {authorId: id, title: title, content: content}
+
+    postData = {
+      authorId: id,
+      title: title,
+      content: content
+    }
     // add authorId, title, content to postData object
+
     const post = await createPost(postData);
     // this will create the post and the tags for us
+
     if (post) {
-        res.send({ post });
-    // if the post comes back, res.send({ post });
+      res.send({ post });
+      // if the post comes back, res.send({ post });
+
     } else {
-        next({
-            name: 'PostDataError',
-            message: `Post not created properly`
-        });
-    // otherwise, next an appropriate error object
+      next({
+        name: 'PostDataError',
+        message: `Post not created properly`
+      });
+      // otherwise, next an appropriate error object
     }
-    
-    
+
   } catch ({ name, message }) {
     next({ name, message });
   }
