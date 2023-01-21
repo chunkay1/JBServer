@@ -3,7 +3,12 @@ const postsRouter = express.Router();
 
 const { requireUser } = require("./utils");
 
+const { createPost } = require("../db");
 // From users.js to assist w/ 
+
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = process.env;
+
 const { getUserByUsername } = require('../db');
 
 postsRouter.post("/", requireUser, async (req, res, next) => {
@@ -22,11 +27,13 @@ postsRouter.post("/", requireUser, async (req, res, next) => {
   }
 
   try {
+    const { token } = jwt.verify(data, JWT_SECRET);
+    const username = token.username
     const currentUser = await getUserByUsername(username);
     const id = currentUser.id
     console.log('currentUser.id =', id);
     // attempt to define user - from users.js
-    postData = {currentUser, title, content}
+    postData = {authorId: id, title: title, content: content}
     // add authorId, title, content to postData object
     const post = await createPost(postData);
     // this will create the post and the tags for us
